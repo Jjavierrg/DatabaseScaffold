@@ -1,0 +1,51 @@
+﻿<mah:MetroWindow x:Class="DatabaseScaffold.Views.ShellView"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:DatabaseScaffold.Controls"
+        xmlns:cal="http://www.caliburnproject.org"
+        xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+        Dialog:DialogParticipation.Register="{Binding}"
+        GlowBrush="{DynamicResource MahApps.Brushes.Accent}"
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d"
+        Title="Generador Scaffold">
+    <mah:MetroWindow.RightWindowCommands>
+        <mah:WindowCommands ShowLastSeparator="False" >
+            <Button cal:Message.Attach="LoadConfigAsync" Content="Cargar Configuración"></Button>
+            <Button cal:Message.Attach="SaveConfigAsync" Content="Guardar Configuración"></Button>
+        </mah:WindowCommands>
+    </mah:MetroWindow.RightWindowCommands>
+    <controls:BusyIndicator IsBusy="{Binding IsBusy}" BusyText="{Binding BusyText}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBox Grid.Row="0" Grid.Column="0" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.Watermark="Cadena de conexión" Text="{Binding Configuration.ConnectionString}"></TextBox>
+            <Button x:Name="LoadSchema" Grid.Row="0" Grid.Column="1" Content="Obtener esquema" HorizontalAlignment="Stretch" Command="{Binding LoadSchemaCommand}" />
+            <TextBox Grid.Row="1" Grid.Column="0" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.Watermark="Proyecto Data" Text="{Binding Configuration.DataProjectFile}"></TextBox>
+            <Button Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" cal:Message.Attach="FindDataProject">Examinar</Button>
+            <TextBox Grid.Row="2" Grid.Column="0" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.Watermark="Archivo de contexto" Text="{Binding Configuration.ContextFile}"></TextBox>
+            <Button Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" cal:Message.Attach="FindContext">Examinar</Button>
+            <TextBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.Watermark="Parámetros adicionales" Text="{Binding Configuration.AdditionalParams}"></TextBox>
+            <ScrollViewer Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Auto">
+                <DockPanel VerticalAlignment="Stretch" >
+                    <controls:CheckedExpander ItemsSource="{Binding Configuration.Database.Children}" HeaderText="ESQUEMAS" DockPanel.Dock="Top"></controls:CheckedExpander>
+                    <controls:CheckedExpander ItemsSource="{Binding Configuration.Database.Tables}" HeaderText="TABLAS" DockPanel.Dock="Top"></controls:CheckedExpander>
+                </DockPanel>
+            </ScrollViewer>
+            <Button Grid.Row="5" Grid.Column="1" HorizontalAlignment="Stretch" Command="{Binding GenerateScaffoldCommand}">Generar Scaffold</Button>
+        </Grid>
+    </controls:BusyIndicator>
+</mah:MetroWindow>

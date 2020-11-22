@@ -1,0 +1,78 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                    xmlns:controls="clr-namespace:DatabaseScaffold.Controls"
+                    xmlns:cal="http://www.caliburnproject.org"
+                    xmlns:local="clr-namespace:DatabaseScaffold.Dictionaries">
+
+    <!--Converters-->
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+    <!--Indicador de ocupado-->
+    <Style TargetType="{x:Type controls:BusyIndicator}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Grid>
+                        <!--Contenidos-->
+                        <ContentPresenter Content="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"/>
+
+                        <!--Busy Indicator-->
+                        <Border Background="#806F6F6F" Visibility="{Binding IsBusy, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}" >
+                            <StackPanel VerticalAlignment="Center">
+                                <mah:ProgressRing x:Name="PRing" />
+                                <TextBlock Text="{Binding BusyText, RelativeSource={RelativeSource TemplatedParent}}" HorizontalAlignment="Center" FontSize="20" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--Checked Listbox -->
+    <Style x:Key="CheckedListbox" TargetType="{x:Type ListBox}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <ItemsPresenter />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <CheckBox Margin="5,2" IsChecked="{Binding Selected}" Content="{Binding FullName}">
+                    </CheckBox>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--Checked Expander-->
+    <Style TargetType="{x:Type controls:CheckedExpander}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Expander>
+                        <Expander.Header>
+                            <Grid cal:Action.TargetWithoutContext="{Binding RelativeSource={RelativeSource TemplatedParent}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" VerticalAlignment="Center" Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" Text="{Binding HeaderText, RelativeSource={RelativeSource TemplatedParent}}"></TextBlock>
+                                <Button Grid.Column="1" Style="{DynamicResource MahApps.Styles.Button.Calendar.Header}" cal:Message.Attach="MarkAll('true')">Seleccionar Todos</Button>
+                                <Button Grid.Column="2" Style="{DynamicResource MahApps.Styles.Button.Calendar.Header}" cal:Message.Attach="MarkAll('false')" Margin="5 0">Borrar Selección</Button>
+                                <Button Grid.Column="3" Style="{DynamicResource MahApps.Styles.Button.Calendar.Header}" cal:Message.Attach="MarkAll(null)" Margin="5 0">Invertir Selección</Button>
+                            </Grid>
+                        </Expander.Header>
+                        <ListBox ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}" Style="{DynamicResource CheckedListbox}"></ListBox>
+                    </Expander>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
