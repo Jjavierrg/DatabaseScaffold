@@ -31,14 +31,7 @@
     </Style>
 
     <!--Checked Listbox -->
-    <Style x:Key="CheckedListbox" TargetType="{x:Type ListBox}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate>
-                    <ItemsPresenter />
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
+    <Style x:Key="CheckedListbox" TargetType="{x:Type ItemsControl}">
         <Setter Property="ItemTemplate">
             <Setter.Value>
                 <DataTemplate>
@@ -69,7 +62,7 @@
                                 <Button Grid.Column="3" Style="{DynamicResource MahApps.Styles.Button.Calendar.Header}" cal:Message.Attach="MarkAll(null)" Margin="5 0">Invertir Selección</Button>
                             </Grid>
                         </Expander.Header>
-                        <ListBox ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}" Style="{DynamicResource CheckedListbox}"></ListBox>
+                        <ItemsControl ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}" Style="{DynamicResource CheckedListbox}" />
                     </Expander>
                 </ControlTemplate>
             </Setter.Value>
