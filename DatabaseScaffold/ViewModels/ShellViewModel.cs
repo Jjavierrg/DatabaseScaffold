@@ -171,7 +171,14 @@
         }
 
         private bool CanLoadSchema() => !string.IsNullOrEmpty(Configuration?.ConnectionString);
-        private bool CanGenerateScaffold() => !string.IsNullOrEmpty(Configuration?.ConnectionString) && (Configuration?.Database?.Tables?.Any(x => x.Selected) ?? false);
+        private bool CanGenerateScaffold()
+        {
+            if (string.IsNullOrEmpty(Configuration?.ConnectionString)) return false;
+            if (string.IsNullOrEmpty(Configuration?.DataProjectFile) || !File.Exists(Configuration.DataProjectFile)) return false;
+            if (string.IsNullOrEmpty(Configuration?.ContextFile) || !File.Exists(Configuration.ContextFile)) return false;
+
+            return Configuration?.Database?.Tables?.Any(x => x.Selected) ?? false;
+        }
         private Configuration GetConfigFromSerialized(string serialized) => JsonConvert.DeserializeObject<Configuration>(serialized, new JsonSerializerSettings { PreserveReferencesHandling = PreserveReferencesHandling.Objects, TypeNameHandling = TypeNameHandling.Auto });
 
         private async Task<Database> GetSchemaAsync(string connectionString)
