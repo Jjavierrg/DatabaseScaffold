@@ -22,8 +22,15 @@
         <DockPanel>
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_Motor">
-                    <MenuItem Header="Version 3 y anteriores" cal:Message.Attach="SetMotorV3"/>
-                    <MenuItem Header="Version 5" cal:Message.Attach="SetMotorV5"/>
+                    <MenuItem Header="Version 3 y anteriores">
+                        <MenuItem Header="Instalar" cal:Message.Attach="InstallMotorAsync('3.1.0')" />
+                        <MenuItem Header="Utilizar" cal:Message.Attach="SetMotorV3" />
+                    </MenuItem>
+                    <MenuItem Header="Version 5">
+                        <MenuItem Header="Instalar" cal:Message.Attach="InstallMotorAsync('3.1.0')" />
+                        <MenuItem Header="Utilizar" cal:Message.Attach="SetMotorV5" />
+                    </MenuItem>
+                    <MenuItem Header="Desinstalar" cal:Message.Attach="UninstallMotorAsync" />
                 </MenuItem>
             </Menu>
             <mah:MetroAnimatedTabControl mah:TabControlHelper.Underlined="TabPanel">

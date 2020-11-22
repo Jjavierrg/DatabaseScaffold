@@ -170,6 +170,28 @@
             }
         }
 
+        public async Task InstallMotorAsync(string version)
+        {
+            var proc = Process.Start("dotnet", $"tool install --global dotnet-ef --version {version}");
+            proc.WaitForExit();
+
+            if (proc.ExitCode == 0)
+                await _dialogCoordinator.ShowMessageAsync(this, "Motor instalado", "Motor instalado con éxito", settings: new MetroDialogSettings { ColorScheme = MetroDialogColorScheme.Accented });
+            else
+                await _dialogCoordinator.ShowMessageAsync(this, "Error", "No se ha podido instalar el motor seleccionado. Pruebe a desinstalar el motor primero", settings: new MetroDialogSettings { ColorScheme = MetroDialogColorScheme.Accented });
+        }
+
+        public async Task UninstallMotorAsync()
+        {
+            var proc = Process.Start("dotnet", $"tool uninstall --global dotnet-ef");
+            proc.WaitForExit();
+
+            if (proc.ExitCode == 0)
+                await _dialogCoordinator.ShowMessageAsync(this, "Motor desinstalado", "Motor desinstalado con éxito", settings: new MetroDialogSettings { ColorScheme = MetroDialogColorScheme.Accented });
+            else
+                await _dialogCoordinator.ShowMessageAsync(this, "Error", "No se ha podido desinstalar el motor. Asegúrese de tener algún motor instalado", settings: new MetroDialogSettings { ColorScheme = MetroDialogColorScheme.Accented });
+        }
+
         private bool CanLoadSchema() => !string.IsNullOrEmpty(Configuration?.ConnectionString);
         private bool CanGenerateScaffold()
         {
