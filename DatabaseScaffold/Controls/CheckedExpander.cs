@@ -30,6 +30,6 @@
             set => SetValue(DisplayFieldProperty, value);
         }
 
-        public void MarkAll(bool? value) => ItemsSource.ToList().ForEach(x => x.Selected = value.HasValue ? value.Value : !x.Selected);
+        public void MarkAll(bool? value) => ItemsSource.ToList().ForEach(x => x.Selected = value ?? !x.Selected);
     }
 }

@@ -19,33 +19,48 @@
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
     <controls:BusyIndicator IsBusy="{Binding IsBusy}" BusyText="{Binding BusyText}">
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="auto"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-            </Grid.RowDefinitions>
-            <TextBox Grid.Row="0" Grid.Column="0" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.Watermark="Cadena de conexión" Text="{Binding Configuration.ConnectionString}"></TextBox>
-            <Button x:Name="LoadSchema" Grid.Row="0" Grid.Column="1" Content="Obtener esquema" HorizontalAlignment="Stretch" Command="{Binding LoadSchemaCommand}" />
-            <TextBox Grid.Row="1" Grid.Column="0" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.Watermark="Proyecto Data" Text="{Binding Configuration.DataProjectFile}"></TextBox>
-            <Button Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" cal:Message.Attach="FindDataProject">Examinar</Button>
-            <TextBox Grid.Row="2" Grid.Column="0" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.Watermark="Archivo de contexto" Text="{Binding Configuration.ContextFile}"></TextBox>
-            <Button Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" cal:Message.Attach="FindContext">Examinar</Button>
-            <TextBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.Watermark="Parámetros adicionales" Text="{Binding Configuration.AdditionalParams}"></TextBox>
-            <ScrollViewer Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Auto">
-                <DockPanel VerticalAlignment="Stretch" >
-                    <controls:CheckedExpander ItemsSource="{Binding Configuration.Database.Children}" HeaderText="ESQUEMAS" DockPanel.Dock="Top"></controls:CheckedExpander>
-                    <controls:CheckedExpander ItemsSource="{Binding Configuration.Database.Tables}" HeaderText="TABLAS" DockPanel.Dock="Top"></controls:CheckedExpander>
-                </DockPanel>
-            </ScrollViewer>
-            <Button Grid.Row="5" Grid.Column="1" HorizontalAlignment="Stretch" Command="{Binding GenerateScaffoldCommand}">Generar Scaffold</Button>
-        </Grid>
+        <DockPanel>
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="_Motor">
+                    <MenuItem Header="Version 3 y anteriores" cal:Message.Attach="SetMotorV3"/>
+                    <MenuItem Header="Version 5" cal:Message.Attach="SetMotorV5"/>
+                </MenuItem>
+            </Menu>
+            <mah:MetroAnimatedTabControl mah:TabControlHelper.Underlined="TabPanel">
+                <mah:MetroTabItem Header="Scaffold">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <TextBox Grid.Row="0" Grid.Column="0" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.Watermark="Cadena de conexión" Text="{Binding Configuration.ConnectionString}"></TextBox>
+                        <Button x:Name="LoadSchema" Grid.Row="0" Grid.Column="1" Content="Refrescar esquema" HorizontalAlignment="Stretch" Command="{Binding LoadSchemaCommand}" />
+                        <TextBox Grid.Row="1" Grid.Column="0" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.Watermark="Proyecto Data" Text="{Binding Configuration.DataProjectFile}"></TextBox>
+                        <Button Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" cal:Message.Attach="FindDataProject">Examinar</Button>
+                        <TextBox Grid.Row="2" Grid.Column="0" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.Watermark="Archivo de contexto" Text="{Binding Configuration.ContextFile}"></TextBox>
+                        <Button Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" cal:Message.Attach="FindContext">Examinar</Button>
+                        <TextBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.Watermark="Parámetros adicionales" Text="{Binding Configuration.AdditionalParams}"></TextBox>
+                        <ScrollViewer Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Auto">
+                            <DockPanel VerticalAlignment="Stretch" >
+                                <controls:CheckedExpander ItemsSource="{Binding Configuration.Database.Children}" HeaderText="ESQUEMAS" DockPanel.Dock="Top"></controls:CheckedExpander>
+                                <controls:CheckedExpander ItemsSource="{Binding Configuration.Database.Tables}" HeaderText="TABLAS" DockPanel.Dock="Top"></controls:CheckedExpander>
+                            </DockPanel>
+                        </ScrollViewer>
+                        <Button Grid.Row="5" Grid.Column="1" HorizontalAlignment="Stretch" Command="{Binding GenerateScaffoldCommand}">Generar Scaffold</Button>
+                    </Grid>
+                </mah:MetroTabItem>
+                <mah:MetroTabItem Header="Parámetros">
+                    <controls:MotorViewer Motor="{Binding Configuration.Motor}"></controls:MotorViewer>
+                </mah:MetroTabItem>
+            </mah:MetroAnimatedTabControl>
+        </DockPanel>
     </controls:BusyIndicator>
 </mah:MetroWindow>

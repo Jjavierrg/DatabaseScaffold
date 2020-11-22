@@ -4,6 +4,7 @@
     using DatabaseScaffold.Core;
     using DatabaseScaffold.Interfaces;
     using DatabaseScaffold.Models;
+    using DatabaseScaffold.Shared;
     using MahApps.Metro.Controls.Dialogs;
     using Microsoft.Win32;
     using Newtonsoft.Json;
@@ -52,6 +53,11 @@
             get => configuration;
             protected set { configuration = value; NotifyOfPropertyChange(); }
         }
+
+
+        public void SetMotorV3() => Configuration.Motor = IoC.Get<IMotor>(Constants.KEY_MOTOR_BASE);
+        public void SetMotorV5() => Configuration.Motor = IoC.Get<IMotor>(Constants.KEY_MOTOR_V5);
+
         public void FindContext()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
@@ -191,6 +197,8 @@
             });
 
             database.Children = new ObservableCollection<Schema>(esquemas.OrderBy(x => x.Name));
+
+            await connection.CloseAsync();
             return database;
         }
 
@@ -207,6 +215,9 @@
                 Configuration = new Configuration();
                 result = false;
             }
+
+            if (Configuration.Motor == null)
+                Configuration.Motor = IoC.Get<IMotor>(Constants.KEY_DEFAULT_MOTOR);
 
             return result;
         }

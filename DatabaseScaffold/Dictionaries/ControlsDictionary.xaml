@@ -75,4 +75,33 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <!--Motor viewer-->
+    <Style TargetType="{x:Type controls:MotorViewer}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <ItemsControl ItemsSource="{Binding Motor.Options, RelativeSource={RelativeSource TemplatedParent}}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <CheckBox Grid.Row="0" Grid.Column="0" Margin="5,2" IsChecked="{Binding Apply}" Content="{Binding Name}" />
+                                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Params, Mode=TwoWay}" Visibility="{Binding HasParamsAndSelected, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                    <TextBlock Margin="30 0 0 10" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Description}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

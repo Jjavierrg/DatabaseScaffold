@@ -1,6 +1,7 @@
 ﻿namespace DatabaseScaffold.Models
 {
     using DatabaseScaffold.Interfaces;
+    using DatabaseScaffold.Motors;
     using Newtonsoft.Json;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
