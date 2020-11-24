@@ -5,17 +5,19 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:DatabaseScaffold.Controls"
-        xmlns:cal="http://www.caliburnproject.org"
+        xmlns:vm="clr-namespace:DatabaseScaffold.ViewModels"
+        xmlns:models="clr-namespace:DatabaseScaffold.Models"
         xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
         Dialog:DialogParticipation.Register="{Binding}"
+        d:DataContext="{d:DesignInstance vm:ShellViewModel}"
         GlowBrush="{DynamicResource MahApps.Brushes.Accent}"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Title="Generador Scaffold">
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands ShowLastSeparator="False" >
-            <Button cal:Message.Attach="LoadConfigAsync" Content="Cargar Configuración"></Button>
-            <Button cal:Message.Attach="SaveConfigAsync" Content="Guardar Configuración"></Button>
+            <Button Content="Cargar Configuración" Command="{Binding LoadConfigCommand}"></Button>
+            <Button Content="Guardar Configuración" Command="{Binding SaveConfigCommand}"></Button>
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
     <controls:BusyIndicator IsBusy="{Binding IsBusy}" BusyText="{Binding BusyText}">
@@ -23,14 +25,14 @@
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_Motor">
                     <MenuItem Header="Version 3 y anteriores">
-                        <MenuItem Header="Instalar" cal:Message.Attach="InstallMotorAsync('3.1.0')" />
-                        <MenuItem Header="Utilizar" cal:Message.Attach="SetMotorV3" />
+                        <MenuItem Header="Instalar" Command="{Binding InstallMotorCommand}" CommandParameter="3.1.0" />
+                        <MenuItem Header="Utilizar" Command="{Binding UseMotorCommand}" CommandParameter="{x:Static models:MotorVersion.Base}" />
                     </MenuItem>
                     <MenuItem Header="Version 5">
-                        <MenuItem Header="Instalar" cal:Message.Attach="InstallMotorAsync('3.1.0')" />
-                        <MenuItem Header="Utilizar" cal:Message.Attach="SetMotorV5" />
+                        <MenuItem Header="Instalar" Command="{Binding InstallMotorCommand}" CommandParameter="5.0.0" />
+                        <MenuItem Header="Utilizar" Command="{Binding UseMotorCommand}" CommandParameter="{x:Static models:MotorVersion.Core5}" />
                     </MenuItem>
-                    <MenuItem Header="Desinstalar" cal:Message.Attach="UninstallMotorAsync" />
+                    <MenuItem Header="Desinstalar" Command="{Binding UninstallMotorCommand}" />
                 </MenuItem>
             </Menu>
             <mah:MetroAnimatedTabControl mah:TabControlHelper.Underlined="TabPanel">
@@ -51,9 +53,9 @@
                         <TextBox Grid.Row="0" Grid.Column="0" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.Watermark="Cadena de conexión" Text="{Binding Configuration.ConnectionString}"></TextBox>
                         <Button x:Name="LoadSchema" Grid.Row="0" Grid.Column="1" Content="Refrescar esquema" HorizontalAlignment="Stretch" Command="{Binding LoadSchemaCommand}" />
                         <TextBox Grid.Row="1" Grid.Column="0" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.Watermark="Proyecto Data" Text="{Binding Configuration.DataProjectFile}"></TextBox>
-                        <Button Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" cal:Message.Attach="FindDataProject">Examinar</Button>
+                        <Button Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" Command="{Binding FindDataProjectCommand}">Examinar</Button>
                         <TextBox Grid.Row="2" Grid.Column="0" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.Watermark="Archivo de contexto" Text="{Binding Configuration.ContextFile}"></TextBox>
-                        <Button Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" cal:Message.Attach="FindContext">Examinar</Button>
+                        <Button Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" Command="{Binding FindContextCommand}">Examinar</Button>
                         <TextBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" mah:TextBoxHelper.AutoWatermark="True" mah:TextBoxHelper.Watermark="Parámetros adicionales" Text="{Binding Configuration.AdditionalParams}"></TextBox>
                         <ScrollViewer Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Auto">
                             <DockPanel VerticalAlignment="Stretch" >
@@ -65,7 +67,12 @@
                     </Grid>
                 </mah:MetroTabItem>
                 <mah:MetroTabItem Header="Parámetros">
-                    <controls:MotorViewer Motor="{Binding Configuration.Motor}"></controls:MotorViewer>
+                    <controls:MotorViewer Motor="{Binding Motor}"></controls:MotorViewer>
+                </mah:MetroTabItem>
+                <mah:MetroTabItem Header="Log">
+                    <DockPanel>
+                        <TextBox AcceptsReturn="True" IsReadOnly="True" IsReadOnlyCaretVisible="False" BorderThickness="0"></TextBox>
+                    </DockPanel>
                 </mah:MetroTabItem>
             </mah:MetroAnimatedTabControl>
         </DockPanel>

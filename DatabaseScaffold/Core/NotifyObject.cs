@@ -1,4 +1,4 @@
-﻿namespace DatabaseScaffold.Motors
+﻿namespace DatabaseScaffold.Core
 {
     using System.ComponentModel;
     using System.Runtime.CompilerServices;

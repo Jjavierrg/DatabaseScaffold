@@ -1,10 +1,7 @@
 ﻿namespace DatabaseScaffold.ViewModels
 {
-    using Caliburn.Micro;
     using DatabaseScaffold.Core;
-    using DatabaseScaffold.Interfaces;
     using DatabaseScaffold.Models;
-    using DatabaseScaffold.Shared;
     using MahApps.Metro.Controls.Dialogs;
     using Microsoft.Win32;
     using Newtonsoft.Json;
@@ -15,48 +12,75 @@
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
+    using static DatabaseScaffold.Models.MotorFactory;
 
-    public class ShellViewModel : Screen, IShell
+    public class ShellViewModel : NotifyObject
     {
         private readonly ICommandGenerator _commandGenerator;
+        private readonly IConsole _console;
+        private readonly MotorFactory _motorFactory;
         private readonly IDialogCoordinator _dialogCoordinator;
-        private string _busyText;
-        private RelayCommand _generateScaffoldCommand;
-        private bool _isBusy;
-        private RelayCommand _loadSchemeCommand;
-        private Configuration configuration;
 
-        public ShellViewModel(IDialogCoordinator dialogCoordinator, ICommandGenerator commandGenerator)
+        private Configuration configuration;
+        private IMotor _motor;
+
+        private string _busyText;
+        private bool _isBusy;
+
+        private RelayCommand _generateScaffoldCommand;
+        private RelayCommand _loadSchemeCommand;
+        private RelayCommand _loadConfigCommand;
+        private RelayCommand _saveConfigCommand;
+        private RelayCommand _uninstallMotorCommand;
+        private RelayCommand<string> _installMotorCommand;
+        private RelayCommand<MotorVersion> _useMotorCommand;
+        private RelayCommand _findDataProjectCommand;
+        private RelayCommand _findContextCommand;
+
+        public ShellViewModel(IDialogCoordinator dialogCoordinator, ICommandGenerator commandGenerator, IConsole console, MotorFactory motorFactory)
         {
             _dialogCoordinator = dialogCoordinator ?? throw new ArgumentNullException(nameof(dialogCoordinator));
             _commandGenerator = commandGenerator ?? throw new ArgumentNullException(nameof(commandGenerator));
-            _commandGenerator.DataReceivedEvent += (object sender, DataReceivedEventArgs e) => BusyText = e.Data;
+            _console = console ?? throw new ArgumentNullException(nameof(console));
+            _motorFactory = motorFactory ?? throw new ArgumentNullException(nameof(motorFactory));
+            _console.OutputDataReceived += (object sender, DataReceivedEventArgs e) => BusyText = e.Data;
 
             var lastSettings = Properties.Settings.Default.lastSettings;
             LoadConfigFromSerialized(lastSettings);
         }
 
-        public RelayCommand LoadSchemaCommand => _loadSchemeCommand ??= new RelayCommand(async (sender) => await LoadSchema(), (sender) => CanLoadSchema());
-        public RelayCommand GenerateScaffoldCommand => _generateScaffoldCommand ??= new RelayCommand(async (sender) => await GenerateScaffold(), (sender) => CanGenerateScaffold());
+        public RelayCommand LoadSchemaCommand => _loadSchemeCommand ??= new RelayCommand(async (_) => await LoadSchema(), (_) => CanLoadSchema());
+        public RelayCommand GenerateScaffoldCommand => _generateScaffoldCommand ??= new RelayCommand(async (_) => await GenerateScaffold(), (_) => CanGenerateScaffold());
+        public RelayCommand LoadConfigCommand => _loadConfigCommand ??= new RelayCommand(async (_) => await LoadConfigAsync());
+        public RelayCommand SaveConfigCommand => _saveConfigCommand ??= new RelayCommand(async (_) => await SaveConfigAsync());
+        public RelayCommand<string> InstallMotorCommand => _installMotorCommand ??= new RelayCommand<string>(async (version) => await InstallMotorAsync(version));
+        public RelayCommand UninstallMotorCommand => _uninstallMotorCommand ??= new RelayCommand(async (_) => await UninstallMotorAsync());
+        public RelayCommand<MotorVersion> UseMotorCommand => _useMotorCommand ??= new RelayCommand<MotorVersion>((version) => Motor = _motorFactory.GetMotor(version));
+        public RelayCommand FindDataProjectCommand => _findDataProjectCommand ??= new RelayCommand((_) => FindDataProject());
+        public RelayCommand FindContextCommand => _findContextCommand ??= new RelayCommand((_) => FindContext());
+
         public bool IsBusy
         {
             get => _isBusy;
-            set { _isBusy = value; NotifyOfPropertyChange(); }
+            set { _isBusy = value; OnPropertyChanged(); }
         }
         public string BusyText
         {
             get => _busyText;
-            set { _busyText = value; NotifyOfPropertyChange(); }
+            set { _busyText = value; OnPropertyChanged(); }
         }
         public Configuration Configuration
         {
             get => configuration;
-            protected set { configuration = value; NotifyOfPropertyChange(); }
+            protected set { configuration = value; OnPropertyChanged(); }
         }
-
-
-        public void SetMotorV3() => Configuration.Motor = IoC.Get<IMotor>(Constants.KEY_MOTOR_BASE);
-        public void SetMotorV5() => Configuration.Motor = IoC.Get<IMotor>(Constants.KEY_MOTOR_V5);
+        public IMotor Motor
+        {
+            get => _motor;
+            protected set { _motor = value; OnPropertyChanged(); }
+        }
+        //public void SetMotorV3() => Motor = IoC.Get<IMotor>(Constants.KEY_MOTOR_BASE);
+        //public void SetMotorV5() => Motor = IoC.Get<IMotor>(Constants.KEY_MOTOR_V5);
 
         public void FindContext()
         {
@@ -92,7 +116,7 @@
             {
                 IsBusy = true;
                 BusyText = "Generando scaffold";
-                await _commandGenerator.Scaffold(Configuration);
+                await _commandGenerator.Scaffold(Configuration, Motor);
 
                 Properties.Settings.Default.lastSettings = SerializeConfig(Configuration);
                 Properties.Settings.Default.Save();
@@ -192,7 +216,7 @@
                 await _dialogCoordinator.ShowMessageAsync(this, "Error", "No se ha podido desinstalar el motor. Asegúrese de tener algún motor instalado", settings: new MetroDialogSettings { ColorScheme = MetroDialogColorScheme.Accented });
         }
 
-        private bool CanLoadSchema() => !string.IsNullOrEmpty(Configuration?.ConnectionString);
+        private bool CanLoadSchema() => true;
         private bool CanGenerateScaffold()
         {
             if (string.IsNullOrEmpty(Configuration?.ConnectionString)) return false;
@@ -244,9 +268,6 @@
                 Configuration = new Configuration();
                 result = false;
             }
-
-            if (Configuration.Motor == null)
-                Configuration.Motor = IoC.Get<IMotor>(Constants.KEY_DEFAULT_MOTOR);
 
             return result;
         }

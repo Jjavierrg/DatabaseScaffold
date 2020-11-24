@@ -4,6 +4,6 @@
     {
         public override string Type => "Esquema";
 
-        protected override string GetParam() => $"--schema {Name}";
+        protected override string GetParam() => "";
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace DatabaseScaffold.Controls
 {
-    using DatabaseScaffold.Interfaces;
+    using DatabaseScaffold.Models;
     using System.Windows;
     using System.Windows.Controls;
 

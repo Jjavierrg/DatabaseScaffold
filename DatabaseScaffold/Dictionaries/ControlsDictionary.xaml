@@ -1,9 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-                    xmlns:controls="clr-namespace:DatabaseScaffold.Controls"
-                    xmlns:cal="http://www.caliburnproject.org"
-                    xmlns:local="clr-namespace:DatabaseScaffold.Dictionaries">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:DatabaseScaffold.Controls">
 
     <!--Converters-->
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -49,7 +47,7 @@
                 <ControlTemplate>
                     <Expander>
                         <Expander.Header>
-                            <Grid cal:Action.TargetWithoutContext="{Binding RelativeSource={RelativeSource TemplatedParent}}">
+                            <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"></ColumnDefinition>
                                     <ColumnDefinition Width="auto"></ColumnDefinition>
@@ -57,9 +55,9 @@
                                     <ColumnDefinition Width="auto"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" VerticalAlignment="Center" Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" Text="{Binding HeaderText, RelativeSource={RelativeSource TemplatedParent}}"></TextBlock>
-                                <Button Grid.Column="1" Style="{DynamicResource MahApps.Styles.Button.Calendar.Header}" cal:Message.Attach="MarkAll('true')">Seleccionar Todos</Button>
-                                <Button Grid.Column="2" Style="{DynamicResource MahApps.Styles.Button.Calendar.Header}" cal:Message.Attach="MarkAll('false')" Margin="5 0">Borrar Selección</Button>
-                                <Button Grid.Column="3" Style="{DynamicResource MahApps.Styles.Button.Calendar.Header}" cal:Message.Attach="MarkAll(null)" Margin="5 0">Invertir Selección</Button>
+                                <Button Grid.Column="1" Style="{DynamicResource MahApps.Styles.Button.Calendar.Header}" Command="{Binding MarkAllCommand, RelativeSource={RelativeSource TemplatedParent}}">Seleccionar Todos</Button>
+                                <Button Grid.Column="2" Style="{DynamicResource MahApps.Styles.Button.Calendar.Header}" Command="{Binding MarkNoneCommand, RelativeSource={RelativeSource TemplatedParent}}" Margin="5 0">Borrar Selección</Button>
+                                <Button Grid.Column="3" Style="{DynamicResource MahApps.Styles.Button.Calendar.Header}" Command="{Binding MarkInvertCommand, RelativeSource={RelativeSource TemplatedParent}}" Margin="5 0">Invertir Selección</Button>
                             </Grid>
                         </Expander.Header>
                         <ItemsControl ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}" Style="{DynamicResource CheckedListbox}" />
@@ -74,25 +72,27 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <ItemsControl ItemsSource="{Binding Motor.Options, RelativeSource={RelativeSource TemplatedParent}}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition />
-                                        <RowDefinition />
-                                    </Grid.RowDefinitions>
-                                    <CheckBox Grid.Row="0" Grid.Column="0" Margin="5,2" IsChecked="{Binding Apply}" Content="{Binding Name}" />
-                                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Params, Mode=TwoWay}" Visibility="{Binding HasParamsAndSelected, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                    <TextBlock Margin="30 0 0 10" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Description}"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                    <ScrollViewer>
+                        <ItemsControl ItemsSource="{Binding Motor.Options, RelativeSource={RelativeSource TemplatedParent}}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <CheckBox Grid.Row="0" Grid.Column="0" Margin="5,2" IsChecked="{Binding Apply}" Content="{Binding Name}" />
+                                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Params, Mode=TwoWay}" Visibility="{Binding HasParamsAndSelected, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                        <TextBlock Margin="30 0 0 10" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Description}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

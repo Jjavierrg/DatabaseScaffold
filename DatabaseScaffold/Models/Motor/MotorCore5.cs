@@ -1,4 +1,4 @@
-﻿namespace DatabaseScaffold.Core.Motors
+﻿namespace DatabaseScaffold.Models
 {
     using System.Linq;
 

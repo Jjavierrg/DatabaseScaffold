@@ -1,4 +1,4 @@
-﻿namespace DatabaseScaffold.Interfaces
+﻿namespace DatabaseScaffold.Models
 {
     public interface IMotorOption
     {

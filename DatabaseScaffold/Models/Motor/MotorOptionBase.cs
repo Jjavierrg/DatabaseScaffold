@@ -1,7 +1,6 @@
-﻿namespace DatabaseScaffold.Core.Motors
+﻿namespace DatabaseScaffold.Models
 {
-    using DatabaseScaffold.Interfaces;
-    using DatabaseScaffold.Motors;
+    using DatabaseScaffold.Core;
     using System;
 
     public class MotorOptionBase : NotifyObject, IMotorOption

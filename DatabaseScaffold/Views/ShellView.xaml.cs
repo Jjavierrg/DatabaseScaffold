@@ -1,5 +1,6 @@
 ﻿namespace DatabaseScaffold.Views
 {
+    using DatabaseScaffold.ViewModels;
     using MahApps.Metro.Controls;
 
     /// <summary>
@@ -7,8 +8,9 @@
     /// </summary>
     public partial class ShellView : MetroWindow
     {
-        public ShellView()
+        public ShellView(ShellViewModel dataContext)
         {
+            DataContext = dataContext;
             InitializeComponent();
         }
     }

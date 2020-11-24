@@ -1,6 +1,5 @@
-﻿namespace DatabaseScaffold.Core.Motors
+﻿namespace DatabaseScaffold.Models
 {
-    using DatabaseScaffold.Interfaces;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -9,6 +8,10 @@
         public BaseMotor()
         {
             Options = new[] {
+                new MotorOptionBase("json", "JSON", "Muestra la salida JSON", false),
+                new MotorOptionBase("no-build", "No build", "No compile el proyecto. Diseñado para usarse cuando la compilación está actualizada.", false),
+                new MotorOptionBase("v", "Verbose", "Mostrar resultado detallado.", false),
+                new MotorOptionBase("prefix-output", "Prefix Output", "Prefijo de salida con nivel.", false),
                 new MotorOptionBase("d", "Data Annotations", "Use los atributos para configurar el modelo (siempre que sea posible). Si se omite esta opción, solo se usa la API fluida", false),
                 new MotorOptionBase("c", "Context", "Nombre de la DbContext clase que se va a generar", true),
                 new MotorOptionBase("context-dir", "Context Dir", "Directorio en el que se va a colocar el DbContext archivo de clase. Las rutas de acceso son relativas al directorio del proyecto. Los espacios de nombres se derivan de los nombres de carpeta.", true),
